@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<title>D3D3CONF</title>
+<body>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<style>
+    html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }
+</style>
+<script>
+    /* Set up some preliminary definitions. We're going to make a grid of squares,
+     * filling the screen. So based on the dimensions of the body and the desired
+     * size of the square, calculate how many rows and columns are needed.
+     */
+    var body = d3.select("body"),
+        width = body.property("offsetWidth"),
+        height = body.property("offsetHeight"),
+        size = 128,
+        rows = Math.ceil(height / size),
+        cols = Math.ceil(width / size);
+
+    /* Map tiles from Zurich, Berlin, Cologne, and New York, the birthplaces of Dada. */
+    var tiles = [
+        '16/34322/22948',
+        '16/34320/22949',
+        '16/34322/22949',
+        '17/68639/45896',
+        '15/17602/10746',
+        '16/35198/21494',
+        '15/17609/10741',
+        '17/70422/43006',
+        '12/2127/1372',
+        '18/136129/87815',
+        '16/34037/21952',
+        '17/68078/43915',
+        '16/19295/24643',
+        '16/19303/24624',
+        '15/9650/12322',
+        '18/77198/98534'
+    ];
+
+    /* Map styles */
+    var styles = [
+        'mapbox.dark',
+        'mapbox.streets-satellite',
+        'mapbox.wheatpaste',
+        'mapbox.pencil',
+        'mapbox.comic',
+        'mapbox.pirates',
+        'saman.h6ek9086',
+        'saman.map-rop2bphf',
+        'saman.ed44282c'
+    ];
+
+    /* Some crazy things that can happen. */
+    var transforms = [
+        function(d, t) { return "rotate(" + (t / (d.x + 1)) % 360 + "deg)"; },
+        function(d, t) { return "scale(" + (Math.sin(t / (d.x + 1)) + 2) + ")"; },
+        function(d, t) { return "scaleX(" + (Math.sin(t / 10 / (d.y + 1)) + 3) + ")"; },
+        function(d, t) { return "scaleY(" + (Math.cos(t / 5 / (d.x * d.y + 1)) + 1) + ")"; },
+        function(d, t) { return "skewX(" + (t % 400 * (d.x + 5)) + "deg)"; },
+        function(d, t) { return "skewY(" + (t / 100 + d.y) + "deg)"; }
+    ];
+
+    var filters = [
+        function(d, t) { return "blur(" + (t / 100 % 5) + "px)"; },
+        function(d, t) { return "brightness(" + (Math.sin(t / 100) + 1) + ")"; },
+        function(d, t) { return "contrast(" + (Math.sin(t / 200) + 3) + ")"; },
+        function(d, t) { return "hue-rotate(" + t % 360 + "deg)"; },
+        function(d, t) { return "invert(" + (t % 500 > 250 ? "100" : "0") + "%)"; },
+    ];
+
+    /* The fundamental concept in D3 is a data join -- a connection between _DOM Elements_
+     * and _data_. So we need some data to work with. In this case, we want to generate
+     * a grid, so the data is simple: an array of [x, y] coordinates in the grid.
+     */
+    var data = [];
+    for (var y = 0; y < rows; y++) {
+        for (var x = 0; x < cols; x++) {
+            var tile = tiles[Math.floor(tiles.length * Math.random())];
+            var style = styles[Math.floor(styles.length * Math.random())];
+            var transform = transforms[Math.floor(transforms.length * Math.random())];
+            var filter = filters[Math.floor(filters.length * Math.random())];
+
+            data.push({
+                x: x,
+                y: y,
+                tile: 'https://api.tiles.mapbox.com/v4/' + style + '/' + tile +
+                      '.png?access_token=pk.eyJ1IjoiamZpcmUiLCJhIjoiLXRMeTg1dyJ9.LDYrqUB0dVNixLDeI4944g',
+                transform: transform,
+                filter: filter
+            });
+        }
+    }
+
+    /* Compute the data join by selecting DOM elements, and joining them to the data we've
+     * created. Think of the result as being like a set of pairs where you take a DOM element
+     * from one side and a data element from the other. Except if there are DOM elements or
+     * data elements "missing" from one side or the other, it gets filled with a placeholder.
+     */
+    var grid = body.selectAll("div").data(data);
+
+    /* In our case, since the body starts off empty, the result has placeholders for _every_
+     * element -- we have `rows * cols` pieces of data but zero DOM elements. Using `enter()`
+     * lets us create the corresponding DOM element for each datum and `append()` them to the
+     * body.
+     */
+    grid.enter().append("div");
+
+    /* Now we can manipulate the elements of the grid: position them in the right place, add
+     * content to them, etc. If you've ever used jQuery, this will feel familiar. Note that
+     * when we use a function like `style()`, we are setting the style for not just one element
+     * but _every_ element in the grid.
+     */
+    grid.style("position", "absolute")
+        .style("overflow", "hidden")
+        .style("width", size + "px")
+        .style("height", size + "px")
+        .style("left", function(d) { return d.x * size + "px"; })
+        .style("top", function(d) { return d.y * size + "px"; });
+
+    var imgs = grid.append("img")
+        .style("position", "absolute")
+        .style("top", "-64px")
+        .style("left", "-64px")
+        .attr("src", function(d) { return d.tile; });
+
+    /* d3.timer lets you do things on every frame.
+     */
+    d3.timer(function(t) {
+        imgs.style("transform", function(d) {
+            return d.transform(d, t);
+        });
+
+        imgs.style("-webkit-filter", function(d) {
+            return d.filter(d, t);
+        });
+    })
+</script>
