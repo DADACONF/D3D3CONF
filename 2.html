@@ -28,12 +28,23 @@
     .append("g")
     .attr("transform", "translate(" + [width / 2 + 30, height / 2 + 100] + ")");
 
+  /* The fundamental concept in D3 is a data join -- a connection between _DOM Elements_
+   * and _data_. So we need some data to work with. In this case, we want to generate
+   * a series of n concentric circles. `d3.range(n)` generates an array `[0, 1, ..., n]`,
+   * and then for each element, `.enter().append("circle")` creates an SVG `circle`
+   * element.
+   */
   var circles = svg.selectAll("circle")
     .data(d3.range(n))
     .enter().append("circle")
     .attr("cx", 0)
     .attr("cy", 0);
 
+  /* d3.timer lets you do things on every frame. You give it a function, and it gets
+   * called with a time value `t` which is a constantly increasing number of milliseconds.
+   * Usually using the raw value is too fast for animations, so you probably want to
+   * divide it by a constant factor `dt`.
+   */
   d3.timer(function(t) {
     t /= dt;
 
