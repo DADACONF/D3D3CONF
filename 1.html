@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <title>D3D3CONF</title>
+<meta charset="UTF-8">
 <body>
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <style>
@@ -139,4 +140,13 @@
             return d.filter(d, t);
         });
     })
+
+    var attribution = body.append("div")
+      .style("position", "absolute")
+      .style("right", "0")
+      .style("bottom", "0")
+      .style("background", "rgba(255,255,255,0.7)")
+      .style("padding", "10px")
+      .style("font-family", "Futura")
+      .html("Map dada <a href='https://openstreetmap.org/'>© OpenStreeMap</a>")
 </script>
