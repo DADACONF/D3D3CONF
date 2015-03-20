@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<title>D3D3CONF</title>
+<body>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<style>
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+</style>
+<script>
+  /* Set up some preliminary definitions. We're going to make a grid of squares,
+   * filling the screen. So based on the dimensions of the body and the desired
+   * size of the square, calculate how many rows and columns are needed.
+   */
+  var body = d3.select("body"),
+    width = body.property("offsetWidth"),
+    height = body.property("offsetHeight"),
+    n = 300; // How many dadadada?
+
+  var dada = d3.range(n).map(function() {
+    return [
+      Math.random() * width,
+      Math.random() * height
+    ];
+  });
+
+  var random = d3.random.logNormal(),
+    fonts = ["American Typewriter", "Marker Felt", "Papyrus", "Comic Sans MS", "Impact", "Cochin"];
+
+  var text = body.selectAll("span")
+    .data(dada)
+    .enter().append("span")
+    .style("position", "absolute")
+    .text(function() {
+      return d3.range(random()).map(function() { return "da"; }).join("");
+    })
+    .style("color", function() {
+      return "rgb(" + [
+          Math.round(Math.random() * 255),
+          Math.round(Math.random() * 255),
+          Math.round(Math.random() * 255)] + ")";
+    })
+    .style("font-family", function() {
+      return fonts[Math.floor(Math.random() * (fonts.length + 1))]
+    });
+
+  /* d3.timer lets you do things on every frame. You give it a function, and it gets
+   * called with a time value `t` which is a constantly increasing number of milliseconds.
+   * Usually using the raw value is too fast for animations, so you probably want to
+   * divide it by a constant factor `dt`.
+   */
+  d3.timer(function(t) {
+    text
+      .style("left", function(d, i) { return (Math.cos(t * i / 50000) * 100 + d[0]) + "px"; })
+      .style("top", function(d, i) { return (Math.sin(t * i / 50000) * 100 + d[1]) + "px"; })
+      .style("font-size", function(d, i) { return (15 + 10 * Math.sin(t / 150)) + "pt" });
+  });
+</script>
