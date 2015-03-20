@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <title>D3D3CONF</title>
 <body>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <style>
   html, body, iframe {
     width: 100%;
@@ -10,5 +11,45 @@
     padding: 0;
     overflow: hidden;
   }
+
+  iframe {
+    position: absolute;
+  }
 </style>
-<iframe src="1.html"></iframe>
+<iframe id="one"></iframe>
+<iframe id="two"></iframe>
+<script>
+  var pieces = [
+    "1.html",
+    "2.html",
+    "3.html"
+  ];
+
+  var front = d3.select("#one"),
+    back = d3.select("#two"),
+    tmp,
+    i = 0;
+
+  (function show() {
+    front
+      .attr("src", pieces[i])
+      .transition()
+      .duration(2000)
+      .style("opacity", 1);
+
+    back
+      .transition()
+      .duration(2000)
+      .style("opacity", 0)
+      .each("end", function() {
+        d3.select(this).attr("src", "");
+      });
+
+    tmp = front;
+    front = back;
+    back = tmp;
+    i = (i + 1) % pieces.length;
+
+    setTimeout(show, 10000);
+  })();
+</script>
