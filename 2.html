@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<title>D3D3CONF</title>
+<body>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<style>
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+</style>
+<script>
+  /* Set up some preliminary definitions. We're going to make a grid of squares,
+   * filling the screen. So based on the dimensions of the body and the desired
+   * size of the square, calculate how many rows and columns are needed.
+   */
+  var body = d3.select("body"),
+    width = body.property("offsetWidth"),
+    height = body.property("offsetHeight"),
+    n = 30,         // How many rings?
+    dr = width / n, // Width of one ring
+    dt = 10;        // How fast to animate (bigger == slower)
+
+  var svg = body.append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + [width / 2 + 30, height / 2 + 100] + ")");
+
+  var circles = svg.selectAll("circle")
+    .data(d3.range(n))
+    .enter().append("circle")
+    .attr("cx", 0)
+    .attr("cy", 0);
+
+  d3.timer(function(t) {
+    t /= dt;
+
+    circles.attr("r", function(d) {
+      return width - d * (width / n) - t % dr;
+    });
+
+    circles.attr("fill", function(d) {
+      if (t % (2 * dr) > dr) {
+        return d % 2 ? "#fff" : "#000";
+      } else {
+        return d % 2 ? "#000" : "#fff";
+      }
+    });
+  });
+
+  var img = body.append("img")
+    .attr("src", "assets/octophone.png")
+    .style("position", "absolute")
+    .style("top", "50%")
+    .style("left", "50%")
+    .style("margin-top", "-227px")
+    .style("margin-left", "-402px");
+
+  var attribution = body.append("div")
+    .style("position", "absolute")
+    .style("right", "25px")
+    .style("bottom", "25px")
+    .style("background", "rgba(255,255,255,0.7)")
+    .style("padding", "10px")
+    .style("font-family", "Futura")
+    .html("After Francis Picabia, <i>Octophone I</i>")
+</script>
