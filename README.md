@@ -17,6 +17,7 @@ We'll put the results up on a projector during the DADAPARTY.
 ## Inspiration
 
 * [D3 animations](jfire.io/animations/)
+* [D3 broke and made art](http://d3brokeandmadeart.tumblr.com/)
 * [Flotsam & Jetsam](http://flotsam.sellingwaves.com/)
 * [Bees & Bombs](http://beesandbombs.tumblr.com/)
 * [Light Processes](http://lightprocesses.tumblr.com/)
