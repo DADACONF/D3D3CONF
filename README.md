@@ -7,3 +7,17 @@ Materials for a workshop on generative art with D3.
 3. Push it!
 
 We'll put the results up on a projector during the DADAPARTY.
+
+## Useful Links
+
+* [Three Little Circles](http://bost.ocks.org/mike/circles/)
+* [a fun, difficult introduction to d3](http://www.macwright.org/presentations/dcjq/)
+* [SVG Shapes](https://github.com/mbostock/d3/wiki/SVG-Shapes)
+
+## Inspiration
+
+* [D3 animations](jfire.io/animations/)
+* [Flotsam & Jetsam](http://flotsam.sellingwaves.com/)
+* [Bees & Bombs](http://beesandbombs.tumblr.com/)
+* [Light Processes](http://lightprocesses.tumblr.com/)
+* [big blue boo](http://bigblueboo.tumblr.com/)
