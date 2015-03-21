@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<title>D3D3CONF</title>
+<body>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<style>
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+</style>
+<script>
+  /* Set up some preliminary definitions. We're going to make some circular rings
+   * that cover the entire screen, so calculate its dimensions and the number and
+   * size of the circles.
+   */
+  var body = d3.select("body"),
+    width = body.property("offsetWidth"),
+    height = body.property("offsetHeight"),
+    n = 55,         // How many rings?
+    dr = width / n, // Width of one ring
+    dt = 15;        // How fast to animate (bigger == slower)
+
+  var svg = body.append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + [width / 2 + 30, height / 2 + 100] + ")");
+
+  /* The fundamental concept in D3 is a data join -- a connection between _DOM Elements_
+   * and _data_. So we need some data to work with. In this case, we want to generate
+   * a series of n concentric circles. `d3.range(n)` generates an array `[0, 1, ..., n]`,
+   * and then for each element, `.enter().append("circle")` creates an SVG `circle`
+   * element.
+   */
+  var circles = svg.selectAll("circle")
+    .data(d3.range(n))
+    .enter().append("circle")
+    .attr("cx", 0)
+    .attr("cy", 0);
+
+  /* d3.timer lets you do things on every frame. You give it a function, and it gets
+   * called with a time value `t` which is a constantly increasing number of milliseconds.
+   * Usually using the raw value is too fast for animations, so you probably want to
+   * divide it by a constant factor `dt`.
+   */
+  d3.timer(function(t) {
+    t /= dt;
+
+    circles.attr("r", function(d) {
+      return width - d * (width / n) - t % dr;
+    });
+
+    circles.attr("fill", function(d) {
+      if (t % (2 * dr) > dr) {
+        return d % 2 ? "#fff" : "#000";
+      } else {
+        return d % 2 ? "#000" : "#fff";
+      }
+    });
+  });
+
+  var img = body.append("img")
+    .attr("src", "assets/ballsack.gif")
+    .style("position", "absolute")
+    .style("top", "50%")
+    .style("left", "50%")
+    .style("margin-top", "-127px")
+    .style("margin-left", "-235px");
+
+  var attribution = body.append("div")
+    .style("position", "absolute")
+    .style("right", "25px")
+    .style("bottom", "25px")
+    .style("background", "rgba(255,255,255,0.7)")
+    .style("padding", "10px")
+    .style("font-family", "Futura")
+    .html("Houston Teledildonics, LLC")
+</script>
